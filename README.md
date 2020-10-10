@@ -15,10 +15,13 @@ Note: It apparently does not work on ChromeOS because it apparently has no `test
 
 Here are some examples:
 ![Before](https://github.com/Stargirl-chan/ctty/blob/master/default.png)
+Unchanged default look
 
 ![Color scheme 1](https://github.com/Stargirl-chan/ctty/blob/master/scheme_1.png)
+Scheme 1
 
 ![Color scheme 2](https://github.com/Stargirl-chan/ctty/blob/master/scheme_2.png)
+Scheme 2
 
 ## How to use
 
