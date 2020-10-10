@@ -123,13 +123,13 @@ do
 	esac
 done
 
-if [[ $OPTIND -eq 1 ]]; then
+if [ $OPTIND -eq 1 ]; then
 	echo "No parameters given.."
 	help_function
 fi
 
-if ! [[ -z "${arg_c// }" ]]; then
-	if [[ $(check_scheme $arg_c) -eq 1 ]]; then
+if ! [ -z "${arg_c// }" ]; then
+	if [ $(check_scheme $arg_c) -eq 1 ]; then
 		echo "Using color scheme: $arg_c"
 		color_scheme_$arg_c
 		printf %b "\e]P0$bg"		\
