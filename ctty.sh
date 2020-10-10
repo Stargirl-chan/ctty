@@ -83,7 +83,7 @@ color_scheme_hyper() {
 #Naming schemes for colors are 'color_scheme_N' where N is some name
 #Only the value of N is relevant for the end-user, the rest is internal
 list_schemes() {
-	compgen -A function | grep "color_scheme_" | cut -d_ -f3
+	grep "^color_scheme_" $0 | cut -d_ -f3 | sed 's/[(].*$//'
 }
 
 #Checks if the given scheme is available, if not it returns 0
@@ -128,7 +128,11 @@ if [ $OPTIND -eq 1 ]; then
 	help_function
 fi
 
+<<<<<<< HEAD
+if ! [ -z $(echo $arg_c | tr -d ' ') ]; then
+=======
 if ! [ -z "${arg_c// }" ]; then
+>>>>>>> 11c08a137af11b6f4d502822e5603ab663ed52db
 	if [ $(check_scheme $arg_c) -eq 1 ]; then
 		echo "Using color scheme: $arg_c"
 		color_scheme_$arg_c
