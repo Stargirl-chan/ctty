@@ -4,7 +4,7 @@ CTTY is a simple script that allows the user to change the default colors in any
 It does this by overriding the default color values.
 
 Now, we can only define 16 distinc colors, minus 2 that are sacrificed for fore- and background.
-Curretnly there are only 2 schemes to choose from, though I will add more as time goes on.
+Currently there are only 2 schemes to choose from, though I will add more as time goes on.
 
 Contributions are also welcomed c:
 
