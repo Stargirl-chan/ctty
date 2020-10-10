@@ -17,20 +17,20 @@ version="0.1"
 	dark_black:		0
 	dark_red:		1
 	dark_green:		2
-	dark_yellow:	3
+	dark_yellow:		3
 	dark_blue:		4
-	dark_magenta:	5
+	dark_magenta:		5
 	dark_cyan:		6
 	dark_white:		7
 
-	light_black:	8
+	light_black:		8
 	light_red:		9
-	light_green:	a
-	light_yellow:	b
+	light_green:		a
+	light_yellow:		b
 	light_blue:		c
-	light_magenta:	d
+	light_magenta:		d
 	light_cyan:		e
-	light_white:	f
+	light_white:		f
 
 '
 
@@ -132,22 +132,22 @@ if ! [[ -z "${arg_c// }" ]]; then
 	if [[ $(check_scheme $arg_c) -eq 1 ]]; then
 		echo "Using color scheme: $arg_c"
 		color_scheme_$arg_c
-		printf %b "\e]P0$bg" 				\
-					"\e]P7$fg" 				\
-					"\e]P1$dark_red" 		\
-					"\e]P2$dark_green" 		\
-					"\e]P3$dark_yellow" 	\
-					"\e]P4$dark_blue" 		\
-					"\e]P5$dark_magenta"	\
-					"\e]P6$dark_cyan" 		\
-					"\e]P8$light_black" 	\
-					"\e]P9$light_red" 		\
-					"\e]Pa$light_green" 	\
-					"\e]Pb$light_yellow" 	\
-					"\e]Pc$light_blue" 		\
-					"\e]Pd$light_magenta" 	\
-					"\e]Pe$light_cyan" 		\
-					"\e]Pf$light_white"
+		printf %b "\e]P0$bg"		\
+			"\e]P7$fg"		\
+			"\e]P1$dark_red"	\
+			"\e]P2$dark_green"	\
+			"\e]P3$dark_yellow" 	\
+			"\e]P4$dark_blue" 	\
+			"\e]P5$dark_magenta"	\
+			"\e]P6$dark_cyan"	\
+			"\e]P8$light_black" 	\
+			"\e]P9$light_red"	\
+			"\e]Pa$light_green" 	\
+			"\e]Pb$light_yellow" 	\
+			"\e]Pc$light_blue"	\
+			"\e]Pd$light_magenta" 	\
+			"\e]Pe$light_cyan"	\
+			"\e]Pf$light_white"
 
 	else
 		echo "Invalid color scheme given, please see the list of available color schemes."
