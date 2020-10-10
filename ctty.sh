@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 version="0.1"
 
@@ -128,11 +128,7 @@ if [ $OPTIND -eq 1 ]; then
 	help_function
 fi
 
-<<<<<<< HEAD
 if ! [ -z $(echo $arg_c | tr -d ' ') ]; then
-=======
-if ! [ -z "${arg_c// }" ]; then
->>>>>>> 11c08a137af11b6f4d502822e5603ab663ed52db
 	if [ $(check_scheme $arg_c) -eq 1 ]; then
 		echo "Using color scheme: $arg_c"
 		color_scheme_$arg_c
