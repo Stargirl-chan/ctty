@@ -1,6 +1,16 @@
 #!/bin/sh
 
-version="0.1"
+version="0.2"
+
+#Creating config directory..
+config_dir="$HOME/.config/ctty"
+if ! [ -d "$config_dir" ]; then
+	echo "Creating config directory.."
+	mkdir -p $config_dir
+	echo "Copying config files.."
+	cp -v $(dirname "$0")/ctty/* $config_dir/
+fi
+
 
 #Defining available color schemes.
 #There are 16 colors we can define.
@@ -14,26 +24,27 @@ version="0.1"
 
 #Color indices are as following:
 : '
-	dark_black:		0
-	dark_red:		1
-	dark_green:		2
-	dark_yellow:		3
-	dark_blue:		4
-	dark_magenta:		5
-	dark_cyan:		6
-	dark_white:		7
+	dark_black:	0
+	dark_red:	1
+	dark_green:	2
+	dark_yellow:	3
+	dark_blue:	4
+	dark_magenta:	5
+	dark_cyan:	6
+	dark_white:	7
 
-	light_black:		8
-	light_red:		9
-	light_green:		a
-	light_yellow:		b
-	light_blue:		c
-	light_magenta:		d
-	light_cyan:		e
-	light_white:		f
+	light_black:	8
+	light_red:	9
+	light_green:	a
+	light_yellow:	b
+	light_blue:	c
+	light_magenta:	d
+	light_cyan:	e
+	light_white:	f
 
 '
 
+#Built-in schemes
 color_scheme_default() {
 	fg=c5c8c6
 	bg=1d1f21
@@ -80,10 +91,22 @@ color_scheme_hyper() {
 	light_white=ffffff
 }
 
+#Loading the scheme file..
+source $config_dir/colorSchemes.sh
+
 #Naming schemes for colors are 'color_scheme_N' where N is some name
 #Only the value of N is relevant for the end-user, the rest is internal
 list_schemes() {
-	grep "^color_scheme_" $0 | cut -d_ -f3 | sed 's/[(].*$//'
+	grep "^color_scheme_" $0 $config_dir/colorSchemes.sh | cut -d_ -f3,4 | sed 's/[(].*$//'
+
+	#Failed POSIX attempt to get a list of all function..
+	#If anyone knows a POSIX way to get a list of all defined
+	#functions please let me know..
+
+	#if [ "$(command -v $0)x" != "x" ]; then
+    	#	echo " * INFO: Found function $0"
+	#fi
+
 }
 
 #Checks if the given scheme is available, if not it returns 0
