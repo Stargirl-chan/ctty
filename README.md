@@ -9,6 +9,7 @@ Curretnly there are only 2 schemes to choose from, though I will add more as tim
 Contributions are also welcomed c:
 
 The script should work on any Linux system, BSD is untested but I'm 80% sure that it should work just fine.
+Note: It apparently does not work on ChromeOS because it apparently has no `test` command.. ~~can you even consider it Linux anymore?~~
 
 
 Here are some examples:
