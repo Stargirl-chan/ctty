@@ -114,7 +114,7 @@ check_scheme() {
 	ret=0
 	list=$(list_schemes)
 	for scheme in $list; do
-		if [ $1 == $scheme ]; then
+		if [ "$1" = "$scheme" ] || [ "$1" = "Xresources" ]; then
 			ret=1
 			break
 		else
@@ -125,23 +125,52 @@ check_scheme() {
 	return $ret
 }
 
+parse_xresources() {
+	if [ -e $HOME/.Xresources ]; then
+		fg=$(grep "foreground" ~/.Xresources | cut -d# -f2)
+		bg=$(grep "background" ~/.Xresources | cut -d# -f2)
+		dark_black=$bg
+		dark_red=$(grep "color1:" ~/.Xresources | cut -d# -f2)
+		dark_green=$(grep "color2:" ~/.Xresources | cut -d# -f2)
+		dark_yellow=$(grep "color3:" ~/.Xresources | cut -d# -f2)
+		dark_blue=$(grep "color4:" ~/.Xresources | cut -d# -f2)
+		dark_magenta=$(grep "color5:" ~/.Xresources | cut -d# -f2)
+		dark_cyan=$(grep "color6:" ~/.Xresources | cut -d# -f2)
+		dark_white=$fg
+
+		light_black=$(grep "color8:" ~/.Xresources | cut -d# -f2)
+		light_red=$(grep "color9:" ~/.Xresources | cut -d# -f2)
+		light_green=$(grep "color10:" ~/.Xresources | cut -d# -f2)
+		light_yellow=$(grep "color11:" ~/.Xresources | cut -d# -f2)
+		light_blue=$(grep "color12:" ~/.Xresources | cut -d# -f2)
+		light_magenta=$(grep "color13:" ~/.Xresources | cut -d# -f2)
+		light_cyan=$(grep "color14:" ~/.Xresources | cut -d# -f2)
+		light_white=$(grep "color15:" ~/.Xresources | cut -d# -f2)
+	else
+		echo "Xresources does not exist, exiting."
+		exit 1
+	fi
+}
+
 help_function() {
 	echo ""
-	echo "Usage: $0 [-chvl] <Argument>"
+	echo "Usage: $0 [-chvxl] <Argument>"
 	echo -e "\t-c\tset the color scheme"
 	echo -e "\t-h\tprint this help screen"
 	echo -e "\t-l\tlist available color schemes"
 	echo -e "\t-v\tprint version"
+	echo -e "\t-x\tparse and use Xresources color scheme"
 	exit 1
 }
 
-while getopts "c:hlv" opt
+while getopts "c:hlxv" opt
 do
 	case "$opt" in
 		c ) arg_c="$OPTARG" ;;
 		h ) help_function ;;
 		l ) list_schemes ;;
 		v ) echo "Version: $version" ;;
+		x ) arg_c="Xresources" ;;
 		? ) help_function ;;
 	esac
 done
@@ -154,7 +183,11 @@ fi
 if ! [ -z $(echo $arg_c | tr -d ' ') ]; then
 	if [ $(check_scheme $arg_c) -eq 1 ]; then
 		echo "Using color scheme: $arg_c"
-		color_scheme_$arg_c
+		if [ "$arg_c" = "Xresources" ]; then
+			parse_xresources
+		else
+			color_scheme_$arg_c
+		fi
 		printf %b "\e]P0$bg"		\
 			"\e]P7$fg"		\
 			"\e]P1$dark_red"	\
