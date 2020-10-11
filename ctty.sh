@@ -92,7 +92,7 @@ color_scheme_hyper() {
 }
 
 #Loading the scheme file..
-source $config_dir/colorSchemes.sh
+. $config_dir/colorSchemes.sh
 
 #Naming schemes for colors are 'color_scheme_N' where N is some name
 #Only the value of N is relevant for the end-user, the rest is internal
@@ -122,7 +122,6 @@ check_scheme() {
 		fi
 	done
 	echo $ret
-	return $ret
 }
 
 parse_xresources() {
@@ -152,24 +151,38 @@ parse_xresources() {
 	fi
 }
 
-help_function() {
-	echo ""
-	echo "Usage: $0 [-chvxl] <Argument>"
-	echo -e "\t-c\tset the color scheme"
-	echo -e "\t-h\tprint this help screen"
-	echo -e "\t-l\tlist available color schemes"
-	echo -e "\t-v\tprint version"
-	echo -e "\t-x\tparse and use Xresources color scheme"
-	exit 1
+invert_color() {
+	in_color=$(echo $1 | sed 's/.\{2\}/& /g')
+	for value in $in_color; do
+		dec_color=$(printf "%d" 0x$value)
+		inv_color=$((255-$dec_color))
+		hex_color=$(printf "%x" $inv_color)
+		hex="${hex:+${hex}, }${hex_color}"
+		tr_hex=$(echo $hex | tr -d ', ')
+	done
+	echo $tr_hex
 }
 
-while getopts "c:hlxv" opt
+help_function() {
+	printf %b '\n' \
+		"Usage: $0 [-ichvxl] <Argument>\n"	\
+		'\t-c\tset the color scheme\n'		\
+		'\t-h\tprint this help screen\n'	\
+		'\t-l\tlist available schemes\n'	\
+		'\t-v\tprint version\n'			\
+		'\t-i\tinvert color scheme, use with -c or -x\n'\
+		'\t-x\tparse and use Xresource color scheme\n'
+	exit 0
+}
+
+while getopts "c:hlixv" opt
 do
 	case "$opt" in
 		c ) arg_c="$OPTARG" ;;
 		h ) help_function ;;
 		l ) list_schemes ;;
 		v ) echo "Version: $version" ;;
+		i ) arg_i="Inverted" ;;
 		x ) arg_c="Xresources" ;;
 		? ) help_function ;;
 	esac
@@ -180,6 +193,7 @@ if [ $OPTIND -eq 1 ]; then
 	help_function
 fi
 
+: '
 if ! [ -z $(echo $arg_c | tr -d ' ') ]; then
 	if [ $(check_scheme $arg_c) -eq 1 ]; then
 		echo "Using color scheme: $arg_c"
@@ -204,8 +218,92 @@ if ! [ -z $(echo $arg_c | tr -d ' ') ]; then
 			"\e]Pd$light_magenta" 	\
 			"\e]Pe$light_cyan"	\
 			"\e]Pf$light_white"
+		exit 0
 
 	else
 		echo "Invalid color scheme given, please see the list of available color schemes."
+	fi
+fi
+'
+if ! [ -z $(echo $arg_c | tr -d ' ') ]; then
+	if [ $(check_scheme $arg_c) -eq 1 ]; then
+		if [ -z $(echo $arg_i | tr -d ' ') ]; then
+			echo "Using color scheme: $arg_c"
+			if [ "$arg_c" = "Xresources" ]; then
+				parse_xresources
+			else
+				color_scheme_$arg_c
+			fi
+		else
+			echo "Using color scheme: $arg_i $arg_c"
+			if [ "$arg_c" = "Xresources" ]; then
+				parse_xresources
+
+				fg=$(invert_color $fg)
+				bg=$(invert_color $bg)
+
+				dark_black=$bg
+				dark_red=$(invert_color $dark_red)
+				dark_green=$(invert_color $dark_green)
+				dark_yellow=$(invert_color $dark_yellow)
+				dark_blue=$(invert_color $dark_blue)
+				dark_magenta=$(invert_color $dark_magenta)
+				dark_cyan=$(invert_color $dark_cyan)
+				dark_white=$fg
+
+				light_black=$(invert_color $light_black)
+				light_red=$(invert_color $light_red)
+				light_green=$(invert_color $light_green)
+				light_yellow=$(invert_color $light_yellow)
+				light_blue=$(invert_color $light_blue)
+				light_magenta=$(invert_color $light_magenta)
+				light_cyan=$(invert_color $light_cyan)
+				light_white=$(invert_color $light_white)
+			else
+				color_scheme_$arg_c
+
+				fg=$(invert_color $fg)
+				bg=$(invert_color $bg)
+
+				dark_black=$bg
+				dark_red=$(invert_color $dark_red)
+				dark_green=$(invert_color $dark_green)
+				dark_yellow=$(invert_color $dark_yellow)
+				dark_blue=$(invert_color $dark_blue)
+				dark_magenta=$(invert_color $dark_magenta)
+				dark_cyan=$(invert_color $dark_cyan)
+				dark_white=$fg
+
+				light_black=$(invert_color $light_black)
+				light_red=$(invert_color $light_red)
+				light_green=$(invert_color $light_green)
+				light_yellow=$(invert_color $light_yellow)
+				light_blue=$(invert_color $light_blue)
+				light_magenta=$(invert_color $light_magenta)
+				light_cyan=$(invert_color $light_cyan)
+				light_white=$(invert_color $light_white)
+			fi
+		fi
+		printf %b "\e]P0$dark_black"	\
+			"\e]P7$dark_white"	\
+			"\e]P1$dark_red"	\
+			"\e]P2$dark_green"	\
+			"\e]P3$dark_yellow" 	\
+			"\e]P4$dark_blue" 	\
+			"\e]P5$dark_magenta"	\
+			"\e]P6$dark_cyan"	\
+			"\e]P8$light_black" 	\
+			"\e]P9$light_red"	\
+			"\e]Pa$light_green" 	\
+			"\e]Pb$light_yellow" 	\
+			"\e]Pc$light_blue"	\
+			"\e]Pd$light_magenta" 	\
+			"\e]Pe$light_cyan"	\
+			"\e]Pf$light_white"
+		exit 0
+
+	else
+		echo "Invalid color scheme given, please see the list of available color schemes."
+		exit 1
 	fi
 fi
