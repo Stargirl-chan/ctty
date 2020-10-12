@@ -1,6 +1,6 @@
 #!/bin/sh
 
-version="0.2"
+version="0.3"
 
 #Creating config directory..
 config_dir="$HOME/.config/ctty"
@@ -157,10 +157,9 @@ invert_color() {
 		dec_color=$(printf "%d" 0x$value)
 		inv_color=$((255-$dec_color))
 		hex_color=$(printf "%x" $inv_color)
-		hex="${hex:+${hex}, }${hex_color}"
-		tr_hex=$(echo $hex | tr -d ', ')
+		hex="${hex:+${hex}}${hex_color}"
 	done
-	echo $tr_hex
+	echo $hex
 }
 
 inverted_colors() {
@@ -236,7 +235,7 @@ set_colour() {
 	exit 0
 }
 
-if [ -n $arg_c ] && [ $(check_scheme $arg_c) -eq 1 ]; then
+if [ -n $arg_c ] && [ -z $arg_i ] && [ $(check_scheme $arg_c) -eq 1 ]; then
 	echo "Using color scheme: $arg_c"
 	if [ "$arg_c" = "Xresources" ]; then
 		parse_xresources
