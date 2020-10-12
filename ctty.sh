@@ -203,8 +203,8 @@ do
 	case "$opt" in
 		c ) arg_c="$OPTARG" ;;
 		h ) help_function ;;
-		l ) list_schemes ;;
-		v ) echo "Version: $version" ;;
+		l ) list_schemes; exit 0 ;;
+		v ) echo "Version: $version"; exit 0 ;;
 		i ) arg_i="Inverted" ;;
 		x ) arg_c="Xresources" ;;
 		? ) help_function ;;
