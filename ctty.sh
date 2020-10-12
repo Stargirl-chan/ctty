@@ -163,6 +163,29 @@ invert_color() {
 	echo $tr_hex
 }
 
+inverted_colors() {
+	fg=$(invert_color $fg)
+	bg=$(invert_color $bg)
+
+	dark_black=$bg
+	dark_red=$(invert_color $dark_red)
+	dark_green=$(invert_color $dark_green)
+	dark_yellow=$(invert_color $dark_yellow)
+	dark_blue=$(invert_color $dark_blue)
+	dark_magenta=$(invert_color $dark_magenta)
+	dark_cyan=$(invert_color $dark_cyan)
+	dark_white=$fg
+
+	light_black=$(invert_color $light_black)
+	light_red=$(invert_color $light_red)
+	light_green=$(invert_color $light_green)
+	light_yellow=$(invert_color $light_yellow)
+	light_blue=$(invert_color $light_blue)
+	light_magenta=$(invert_color $light_magenta)
+	light_cyan=$(invert_color $light_cyan)
+	light_white=$(invert_color $light_white)
+}
+
 help_function() {
 	printf %b '\n' \
 		"Usage: $0 [-ichvxl] <Argument>\n"	\
@@ -180,8 +203,8 @@ do
 	case "$opt" in
 		c ) arg_c="$OPTARG" ;;
 		h ) help_function ;;
-		l ) list_schemes ;;
-		v ) echo "Version: $version" ;;
+		l ) list_schemes; exit 0 ;;
+		v ) echo "Version: $version"; exit 0 ;;
 		i ) arg_i="Inverted" ;;
 		x ) arg_c="Xresources" ;;
 		? ) help_function ;;
@@ -193,85 +216,46 @@ if [ $OPTIND -eq 1 ]; then
 	help_function
 fi
 
-if ! [ -z $(echo $arg_c | tr -d ' ') ]; then
-	if [ $(check_scheme $arg_c) -eq 1 ]; then
-		if [ -z $(echo $arg_i | tr -d ' ') ]; then
-			echo "Using color scheme: $arg_c"
-			if [ "$arg_c" = "Xresources" ]; then
-				parse_xresources
-			else
-				color_scheme_$arg_c
-			fi
-		else
-			echo "Using color scheme: $arg_i $arg_c"
-			if [ "$arg_c" = "Xresources" ]; then
-				parse_xresources
+set_colour() {
+	printf %b "\e]P0$dark_black"	\
+		"\e]P7$dark_white"	\
+		"\e]P1$dark_red"	\
+		"\e]P2$dark_green"	\
+		"\e]P3$dark_yellow" 	\
+		"\e]P4$dark_blue" 	\
+		"\e]P5$dark_magenta"	\
+		"\e]P6$dark_cyan"	\
+		"\e]P8$light_black" 	\
+		"\e]P9$light_red"	\
+		"\e]Pa$light_green" 	\
+		"\e]Pb$light_yellow" 	\
+		"\e]Pc$light_blue"	\
+		"\e]Pd$light_magenta" 	\
+		"\e]Pe$light_cyan"	\
+		"\e]Pf$light_white"
+	exit 0
+}
 
-				fg=$(invert_color $fg)
-				bg=$(invert_color $bg)
-
-				dark_black=$bg
-				dark_red=$(invert_color $dark_red)
-				dark_green=$(invert_color $dark_green)
-				dark_yellow=$(invert_color $dark_yellow)
-				dark_blue=$(invert_color $dark_blue)
-				dark_magenta=$(invert_color $dark_magenta)
-				dark_cyan=$(invert_color $dark_cyan)
-				dark_white=$fg
-
-				light_black=$(invert_color $light_black)
-				light_red=$(invert_color $light_red)
-				light_green=$(invert_color $light_green)
-				light_yellow=$(invert_color $light_yellow)
-				light_blue=$(invert_color $light_blue)
-				light_magenta=$(invert_color $light_magenta)
-				light_cyan=$(invert_color $light_cyan)
-				light_white=$(invert_color $light_white)
-			else
-				color_scheme_$arg_c
-
-				fg=$(invert_color $fg)
-				bg=$(invert_color $bg)
-
-				dark_black=$bg
-				dark_red=$(invert_color $dark_red)
-				dark_green=$(invert_color $dark_green)
-				dark_yellow=$(invert_color $dark_yellow)
-				dark_blue=$(invert_color $dark_blue)
-				dark_magenta=$(invert_color $dark_magenta)
-				dark_cyan=$(invert_color $dark_cyan)
-				dark_white=$fg
-
-				light_black=$(invert_color $light_black)
-				light_red=$(invert_color $light_red)
-				light_green=$(invert_color $light_green)
-				light_yellow=$(invert_color $light_yellow)
-				light_blue=$(invert_color $light_blue)
-				light_magenta=$(invert_color $light_magenta)
-				light_cyan=$(invert_color $light_cyan)
-				light_white=$(invert_color $light_white)
-			fi
-		fi
-		printf %b "\e]P0$dark_black"	\
-			"\e]P7$dark_white"	\
-			"\e]P1$dark_red"	\
-			"\e]P2$dark_green"	\
-			"\e]P3$dark_yellow" 	\
-			"\e]P4$dark_blue" 	\
-			"\e]P5$dark_magenta"	\
-			"\e]P6$dark_cyan"	\
-			"\e]P8$light_black" 	\
-			"\e]P9$light_red"	\
-			"\e]Pa$light_green" 	\
-			"\e]Pb$light_yellow" 	\
-			"\e]Pc$light_blue"	\
-			"\e]Pd$light_magenta" 	\
-			"\e]Pe$light_cyan"	\
-			"\e]Pf$light_white"
-		exit 0
-
+if [ -n $arg_c ] && [ $(check_scheme $arg_c) -eq 1 ]; then
+	echo "Using color scheme: $arg_c"
+	if [ "$arg_c" = "Xresources" ]; then
+		parse_xresources
 	else
-		echo "Invalid color scheme given, please see the list of available color schemes."
-		exit 1
+		color_scheme_$arg_c
 	fi
+	set_colour
+elif [ -n $arg_i ] && [ $(check_scheme $arg_c) -eq 1 ]; then
+	echo "Using color scheme: $arg_i $arg_c"
+	if [ "$arg_c" = "Xresources" ]; then
+		parse_xresources
+		inverted_colors
+	else
+		color_scheme_$arg_c
+		inverted_colors
+
+	fi
+	set_colour
+else
+	echo "Invalid color scheme given, please see the list of available color schemes."
+	exit 1
 fi
