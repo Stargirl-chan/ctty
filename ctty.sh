@@ -217,22 +217,22 @@ if [ $OPTIND -eq 1 ]; then
 fi
 
 set_colour() {
-	printf %b "\e]P0$dark_black"	\
-		"\e]P7$dark_white"	\
-		"\e]P1$dark_red"	\
-		"\e]P2$dark_green"	\
-		"\e]P3$dark_yellow" 	\
-		"\e]P4$dark_blue" 	\
-		"\e]P5$dark_magenta"	\
-		"\e]P6$dark_cyan"	\
-		"\e]P8$light_black" 	\
-		"\e]P9$light_red"	\
-		"\e]Pa$light_green" 	\
-		"\e]Pb$light_yellow" 	\
-		"\e]Pc$light_blue"	\
-		"\e]Pd$light_magenta" 	\
-		"\e]Pe$light_cyan"	\
-		"\e]Pf$light_white"
+	printf %b "\033]P0$dark_black"	\
+		"\033]P7$dark_white"	\
+		"\033]P1$dark_red"	\
+		"\033]P2$dark_green"	\
+		"\033]P3$dark_yellow" 	\
+		"\033]P4$dark_blue" 	\
+		"\033]P5$dark_magenta"	\
+		"\033]P6$dark_cyan"	\
+		"\033]P8$light_black" 	\
+		"\033]P9$light_red"	\
+		"\033]Pa$light_green" 	\
+		"\033]Pb$light_yellow" 	\
+		"\033]Pc$light_blue"	\
+		"\033]Pd$light_magenta"	\
+		"\033]Pe$light_cyan"	\
+		"\033]Pf$light_white"
 	exit 0
 }
 
