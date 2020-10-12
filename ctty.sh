@@ -216,23 +216,7 @@ if [ $OPTIND -eq 1 ]; then
 	help_function
 fi
 
-if [ -n $arg_c ] && [ $(check_scheme $arg_c) -eq 1 ]; then
-	echo "Using color scheme: $arg_c"
-	if [ "$arg_c" = "Xresources" ]; then
-		parse_xresources
-	else
-		color_scheme_$arg_c
-	fi
-elif [ -n $arg_i ] && [ $(check_scheme $arg_c) -eq 1 ]; then
-	echo "Using color scheme: $arg_i $arg_c"
-	if [ "$arg_c" = "Xresources" ]; then
-		parse_xresources
-		inverted_colors
-	else
-		color_scheme_$arg_c
-		inverted_colors
-
-	fi
+set_colour() {
 	printf %b "\e]P0$dark_black"	\
 		"\e]P7$dark_white"	\
 		"\e]P1$dark_red"	\
@@ -250,6 +234,27 @@ elif [ -n $arg_i ] && [ $(check_scheme $arg_c) -eq 1 ]; then
 		"\e]Pe$light_cyan"	\
 		"\e]Pf$light_white"
 	exit 0
+}
+
+if [ -n $arg_c ] && [ $(check_scheme $arg_c) -eq 1 ]; then
+	echo "Using color scheme: $arg_c"
+	if [ "$arg_c" = "Xresources" ]; then
+		parse_xresources
+	else
+		color_scheme_$arg_c
+	fi
+	set_colour
+elif [ -n $arg_i ] && [ $(check_scheme $arg_c) -eq 1 ]; then
+	echo "Using color scheme: $arg_i $arg_c"
+	if [ "$arg_c" = "Xresources" ]; then
+		parse_xresources
+		inverted_colors
+	else
+		color_scheme_$arg_c
+		inverted_colors
+
+	fi
+	set_colour
 else
 	echo "Invalid color scheme given, please see the list of available color schemes."
 	exit 1
