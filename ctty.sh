@@ -163,6 +163,29 @@ invert_color() {
 	echo $tr_hex
 }
 
+inverted_colors() {
+	fg=$(invert_color $fg)
+	bg=$(invert_color $bg)
+
+	dark_black=$bg
+	dark_red=$(invert_color $dark_red)
+	dark_green=$(invert_color $dark_green)
+	dark_yellow=$(invert_color $dark_yellow)
+	dark_blue=$(invert_color $dark_blue)
+	dark_magenta=$(invert_color $dark_magenta)
+	dark_cyan=$(invert_color $dark_cyan)
+	dark_white=$fg
+
+	light_black=$(invert_color $light_black)
+	light_red=$(invert_color $light_red)
+	light_green=$(invert_color $light_green)
+	light_yellow=$(invert_color $light_yellow)
+	light_blue=$(invert_color $light_blue)
+	light_magenta=$(invert_color $light_magenta)
+	light_cyan=$(invert_color $light_cyan)
+	light_white=$(invert_color $light_white)
+}
+
 help_function() {
 	printf %b '\n' \
 		"Usage: $0 [-ichvxl] <Argument>\n"	\
@@ -206,50 +229,11 @@ if ! [ -z $(echo $arg_c | tr -d ' ') ]; then
 			echo "Using color scheme: $arg_i $arg_c"
 			if [ "$arg_c" = "Xresources" ]; then
 				parse_xresources
-
-				fg=$(invert_color $fg)
-				bg=$(invert_color $bg)
-
-				dark_black=$bg
-				dark_red=$(invert_color $dark_red)
-				dark_green=$(invert_color $dark_green)
-				dark_yellow=$(invert_color $dark_yellow)
-				dark_blue=$(invert_color $dark_blue)
-				dark_magenta=$(invert_color $dark_magenta)
-				dark_cyan=$(invert_color $dark_cyan)
-				dark_white=$fg
-
-				light_black=$(invert_color $light_black)
-				light_red=$(invert_color $light_red)
-				light_green=$(invert_color $light_green)
-				light_yellow=$(invert_color $light_yellow)
-				light_blue=$(invert_color $light_blue)
-				light_magenta=$(invert_color $light_magenta)
-				light_cyan=$(invert_color $light_cyan)
-				light_white=$(invert_color $light_white)
+				inverted_colors
 			else
 				color_scheme_$arg_c
+				inverted_colors
 
-				fg=$(invert_color $fg)
-				bg=$(invert_color $bg)
-
-				dark_black=$bg
-				dark_red=$(invert_color $dark_red)
-				dark_green=$(invert_color $dark_green)
-				dark_yellow=$(invert_color $dark_yellow)
-				dark_blue=$(invert_color $dark_blue)
-				dark_magenta=$(invert_color $dark_magenta)
-				dark_cyan=$(invert_color $dark_cyan)
-				dark_white=$fg
-
-				light_black=$(invert_color $light_black)
-				light_red=$(invert_color $light_red)
-				light_green=$(invert_color $light_green)
-				light_yellow=$(invert_color $light_yellow)
-				light_blue=$(invert_color $light_blue)
-				light_magenta=$(invert_color $light_magenta)
-				light_cyan=$(invert_color $light_cyan)
-				light_white=$(invert_color $light_white)
 			fi
 		fi
 		printf %b "\e]P0$dark_black"	\
