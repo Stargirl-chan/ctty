@@ -57,6 +57,29 @@ color_scheme_solarized_light() {
 	light_white=fdf6e3
 }
 
+color_scheme_dracula() {
+	fg=f8f8f2
+	bg=282a36
+
+	dark_black=$bg
+	dark_red=f55555
+	dark_green=50fa7b
+	dark_yellow=f1fa8c
+	dark_blue=bd93f9
+	dark_magenta=ff79c6
+	dark_cyan=8be9fd
+	dark_white=$fg
+
+	light_black=6272a4
+	light_red=ff7777
+	light_green=70fa9b
+	light_yellow=ffb86c
+	light_blue=cfa9ff
+	light_magenta=ff88e8
+	light_cyan=97e2ff
+	light_white=fg
+}
+
 #Note: Solarized colors will be off..
 #Since we cannot define fore- and background differently.
 #I still hope that it looks pleasant to the users who like solarized
