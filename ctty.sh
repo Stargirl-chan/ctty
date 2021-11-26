@@ -216,22 +216,24 @@ if [ $OPTIND -eq 1 ]; then
 fi
 
 set_colour() {
-	printf %b "\033]P0$dark_black"	\
-		"\033]P7$dark_white"	\
-		"\033]P1$dark_red"	\
-		"\033]P2$dark_green"	\
-		"\033]P3$dark_yellow" 	\
-		"\033]P4$dark_blue" 	\
-		"\033]P5$dark_magenta"	\
-		"\033]P6$dark_cyan"	\
-		"\033]P8$light_black" 	\
-		"\033]P9$light_red"	\
-		"\033]Pa$light_green" 	\
-		"\033]Pb$light_yellow" 	\
-		"\033]Pc$light_blue"	\
-		"\033]Pd$light_magenta"	\
-		"\033]Pe$light_cyan"	\
-		"\033]Pf$light_white"
+	if [ "$TERM" = "linux" ]; then
+		printf %b "\033]P0$dark_black"	\
+			"\033]P7$dark_white"	\
+			"\033]P1$dark_red"	\
+			"\033]P2$dark_green"	\
+			"\033]P3$dark_yellow" 	\
+			"\033]P4$dark_blue" 	\
+			"\033]P5$dark_magenta"	\
+			"\033]P6$dark_cyan"	\
+			"\033]P8$light_black" 	\
+			"\033]P9$light_red"	\
+			"\033]Pa$light_green" 	\
+			"\033]Pb$light_yellow" 	\
+			"\033]Pc$light_blue"	\
+			"\033]Pd$light_magenta"	\
+			"\033]Pe$light_cyan"	\
+			"\033]Pf$light_white"
+	fi
 	exit 0
 }
 
