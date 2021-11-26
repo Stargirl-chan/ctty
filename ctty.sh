@@ -3,7 +3,7 @@
 version="0.3"
 
 #Creating config directory..
-config_dir=./ctty
+config_dir="$HOME/.config/ctty"
 if ! [ -d "$config_dir" ]; then
 	echo "Creating config directory.."
 	mkdir -p $config_dir
