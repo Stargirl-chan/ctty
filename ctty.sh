@@ -2,7 +2,7 @@
 
 version="0.3"
 
-#Creating config directory..
+#set the inital config directory 
 config_dir="$HOME/.config/ctty"
 if ! [ -d "$config_dir" ]; then
 	echo "Creating config directory.."
@@ -91,8 +91,6 @@ color_scheme_hyper() {
 	light_white=ffffff
 }
 
-#Loading the scheme file..
-. $config_dir/colorSchemes.sh
 
 #Naming schemes for colors are 'color_scheme_N' where N is some name
 #Only the value of N is relevant for the end-user, the rest is internal
@@ -106,7 +104,15 @@ list_schemes() {
 	#if [ "$(command -v $0)x" != "x" ]; then
     	#	echo " * INFO: Found function $0"
 	#fi
+}
 
+#
+# This is where the console font directory is stored however this will need to be investigated for other 
+# distros 
+# lists all the valid fonts we can work with and strip the path off them to just the parts the user has 
+# to type in
+print_fonts() {
+	ls /usr/share/kbd/consolefonts/* | grep ".psfu.gz" | sed "s/\/usr\/share\/kbd\/consolefonts\///"
 }
 
 #Checks if the given scheme is available, if not it returns 0
@@ -115,6 +121,20 @@ check_scheme() {
 	list=$(list_schemes)
 	for scheme in $list; do
 		if [ "$1" = "$scheme" ] || [ "$1" = "Xresources" ]; then
+			ret=1
+			break
+		else
+			ret=0
+		fi
+	done
+	echo $ret
+}
+
+check_font() {
+	ret=0
+	list=$(print_fonts)
+	for scheme in $list; do
+		if [ "$1" = "$scheme" ]; then
 			ret=1
 			break
 		else
@@ -187,8 +207,12 @@ inverted_colors() {
 
 help_function() {
 	printf %b '\n' \
-		"Usage: $0 [-ichvxl] <Argument>\n"	\
+		"Usage: $0 [-ifpdschvxl] <Argument>\n"	\
+		'\t-f\tset console font\n'			\
+		'\t-p\tprint list of fonts and exit\n'\
 		'\t-c\tset the color scheme\n'		\
+		'\t-d\tset the font and scheme of this device\n'\
+		'\t-s\toveride the base config directory\n'\
 		'\t-h\tprint this help screen\n'	\
 		'\t-l\tlist available schemes\n'	\
 		'\t-v\tprint version\n'			\
@@ -197,25 +221,56 @@ help_function() {
 	exit 0
 }
 
-while getopts "c:hlixv" opt
+set_font() {
+	if [ -n $device ]; then
+		setfont -C $device
+	fi
+	setfont /usr/shar/kbd/console/fonts/$arg_f
+}
+
+while getopts "c:f:d:s:hlixpv" opt
 do
 	case "$opt" in
 		c ) arg_c="$OPTARG" ;;
+		f ) arg_f="$OPTARG" ;;
 		h ) help_function ;;
 		l ) list_schemes; exit 0 ;;
+		p ) print_fonts; exit 0 ;;
+		d ) device="$OPTARG" ;;
 		v ) echo "Version: $version"; exit 0 ;;
 		i ) arg_i="Inverted" ;;
+		s ) config_dir="$OPTARG" ;;
 		x ) arg_c="Xresources" ;;
 		? ) help_function ;;
 	esac
 done
+
+
+
+#Loading the scheme file..
+. $config_dir/colorSchemes.sh
+
 
 if [ $OPTIND -eq 1 ]; then
 	echo "No parameters given.."
 	help_function
 fi
 
+set_font() {
+	if [ -c "$device" ]; then
+		#Doing it this way for some reason requires sudo even if the user is part of the tty group
+		setfont -C $device /usr/share/kbd/consolefonts/$arg_f
+	elif [ "$TERM" = "linux" ]; then
+		#Sets the current console doesn't need sudo but have to be in the tty
+		setfont /usr/share/kbd/consolefonts/$arg_f
+	else
+		echo "Unable to set fonts on a graphical console please pass a tty through -d option or do this command on a tty"
+	fi	
+}
+
+
 set_colour() {
+	##CHeck to make sure we are on a linux tty
 	if [ "$TERM" = "linux" ]; then
 		printf %b "\033]P0$dark_black"	\
 			"\033]P7$dark_white"	\
@@ -233,9 +288,41 @@ set_colour() {
 			"\033]Pd$light_magenta"	\
 			"\033]Pe$light_cyan"	\
 			"\033]Pf$light_white"
+	elif [ -c "$device" ]; then 
+		#if we aren't on a tty right now check if the user pass a -d arg 
+		#that is a speacial charcater device from my experience requires
+		#A: user to be logged into tty or the user to be part of the tty group
+		#B: Or sudo can be used but tty group is preffred.
+		printf %b "\033]P0$dark_black"	\
+			"\033]P7$dark_white"	\
+			"\033]P1$dark_red"	\
+			"\033]P2$dark_green"	\
+			"\033]P3$dark_yellow" 	\
+			"\033]P4$dark_blue" 	\
+			"\033]P5$dark_magenta"	\
+			"\033]P6$dark_cyan"	\
+			"\033]P8$light_black" 	\
+			"\033]P9$light_red"	\
+			"\033]Pa$light_green" 	\
+			"\033]Pb$light_yellow" 	\
+			"\033]Pc$light_blue"	\
+			"\033]Pd$light_magenta"	\
+			"\033]Pe$light_cyan"	\
+			"\033]Pf$light_white" > $device
+	else 
+		#Else print an error
+		echo "Unable to set this consoles color scheme. Please make sure this is is a tty or using the -d option"
 	fi
 	exit 0
 }
+
+if [ -n $arg_f ] && [ $(check_font $arg_f) -eq 1 ]; then 
+	echo "setting console font to $arg_f"
+	set_font
+else
+	echo "invalid font given, please see the list of fonts with -p"
+	echo "please ignore this error if you didn't pass a font"
+fi 
 
 if [ -n $arg_c ] && [ -z $arg_i ] && [ $(check_scheme $arg_c) -eq 1 ]; then
 	echo "Using color scheme: $arg_c"
@@ -258,5 +345,6 @@ elif [ -n $arg_i ] && [ $(check_scheme $arg_c) -eq 1 ]; then
 	set_colour
 else
 	echo "Invalid color scheme given, please see the list of available color schemes."
+	echo "please ignore this error if you didn't pass a color"
 	exit 1
 fi
