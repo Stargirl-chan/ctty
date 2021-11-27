@@ -24,6 +24,9 @@ Default scheme
 Hyper scheme ~~My favorite so far~~
 ![Color scheme 2](https://github.com/Stargirl-chan/ctty/blob/master/scheme_2.png)
 
+Dracula scheme
+![Dracula Scheme](./dracula.png)
+
 ## How to use
 
 Clone the repo, make the script executable and run it from any TTY
