@@ -1,0 +1,9 @@
+#!/bin/sh
+
+[ -r conf ] && . ./conf
+
+for i in /dev/tty*; do
+    ctty -f sun12x22.psfu.gz -c dracula -s /home/caitlyn/.config/ctty -d $i > /dev/null
+done
+
+pause
