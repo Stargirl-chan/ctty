@@ -7,7 +7,7 @@ CONFIG=${HOME}/.config/
 install:
 	cp ./ctty.sh ${PATH}/ctty #
 	cp -r ./ctty ${CONFIG} #Install config dir 
-	cp -r ./cttyser /etc/sv/ #Install service file 
+	cp -r ./cttyser /etc/sv/ctty #Install service file 
 
 verbose: 
 	echo "${PATH}"
