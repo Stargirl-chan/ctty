@@ -207,8 +207,9 @@ inverted_colors() {
 
 help_function() {
 	printf %b '\n' \
-		"Usage: $0 [-ichvxl] <Argument>\n"	\
+		"Usage: $0 [-ifpdschvxl] <Argument>\n"	\
 		'\t-f\tset console font\n'			\
+		'\t-p\tprint list of fonts and exit\n'\
 		'\t-c\tset the color scheme\n'		\
 		'\t-d\tset the font and scheme of this device\n'\
 		'\t-s\toveride the base config directory\n'\
